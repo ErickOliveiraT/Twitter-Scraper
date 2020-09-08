@@ -11,25 +11,26 @@ access_secret = credentials.ACCESS_TOKEN_SECRET
 
 #Get a user's last tweets
 def get_tweets(username):
-	auth = tweepy.OAuthHandler(api_key, api_secret)
-	auth.set_access_token(access_token, access_secret)
-	api = tweepy.API(auth)
+    auth = tweepy.OAuthHandler(api_key, api_secret)
+    auth.set_access_token(access_token, access_secret)
+    api = tweepy.API(auth)
 
-	#set count to however many tweets you want
-	number_of_tweets = 10
+    #set count to however many tweets you want
+    number_of_tweets = 10
 
-	#get tweets
-	tweets_for_csv = []
-	for tweet in tweepy.Cursor(api.user_timeline, screen_name = username).items(number_of_tweets):
-        #create array of tweet information: username, tweet id, date/time, text
-		tweets_for_csv.append([username, tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")])
+    #get tweets
+    tweets_for_csv = []
+    text = ''
+    for tweet in tweepy.Cursor(api.user_timeline, screen_name = username).items(number_of_tweets):
+        tweets_for_csv.append([username, tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")])
+        print(tweet.text)
 
-	#write to a new csv file from the array of tweets
-	outfile = username + "_tweets.csv"
-	print("writing to " + outfile)
-	with open(outfile, 'w+') as file:
-		writer = csv.writer(file, delimiter=',')
-		writer.writerows(tweets_for_csv)
+    #write to a new csv file from the array of tweets
+    outfile = username + "_tweets.csv"
+    print("writing to " + outfile)
+    with open(outfile, 'w+') as file:
+        writer = csv.writer(file, delimiter=',')
+        writer.writerows(tweets_for_csv)
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
